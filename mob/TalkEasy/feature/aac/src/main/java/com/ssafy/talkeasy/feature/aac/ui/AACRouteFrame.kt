@@ -85,7 +85,6 @@ fun AACRouteFrame(
     val notificationList by followViewModel.notificationList.collectAsState()
     val followList by followViewModel.followList.collectAsState()
     val isSendSucceed by chatViewModel.isSendSucceed.collectAsState()
-
     SideEffect {
         followViewModel.requestMemberInfo()
         followViewModel.requestFollowList()
@@ -103,7 +102,10 @@ fun AACRouteFrame(
                 SendMode.SEND -> {
                     when (chatMode) {
                         ChatMode.TTS -> {
-                            aacViewModel.getTTSMp3Url(generatedSentence)
+                            aacViewModel.playTTS(context, generatedSentence)
+                            aacViewModel.initSelectedCard()
+                            aacViewModel.initGeneratedSentence()
+                            sendMode.value = SendMode.NONE
                         }
 
                         ChatMode.CHAT -> {
@@ -356,8 +358,6 @@ fun ConstraintLayoutScope.AACBox(
     val category by aacViewModel.category.collectAsState()
     val aacWordList by aacViewModel.aacWordList.collectAsState()
     val fixedList by aacViewModel.aacFixedList.collectAsState()
-    val ttsMp3Url by aacViewModel.ttsMp3Url.collectAsState()
-    val context = LocalContext.current
     val (cardClickEnable, setCardClickEnable) = remember {
         mutableStateOf(true)
     }
@@ -365,16 +365,6 @@ fun ConstraintLayoutScope.AACBox(
     SideEffect {
         if (fixedList.isEmpty()) {
             aacViewModel.getWordList(categoryId = 1)
-        }
-    }
-
-    LaunchedEffect(key1 = ttsMp3Url) {
-        if (ttsMp3Url != "" && sendMode.value == SendMode.SEND) {
-            ttsPlay(context, ttsMp3Url)
-            sendMode.value = SendMode.NONE
-            aacViewModel.initTTSMp3Url()
-            aacViewModel.initSelectedCard()
-            aacViewModel.initGeneratedSentence()
         }
     }
 
