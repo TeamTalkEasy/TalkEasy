@@ -1,5 +1,7 @@
 package com.ssafy.talkeasy.feature.aac
 
+import android.content.Context
+import android.speech.tts.TextToSpeech
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -9,11 +11,11 @@ import com.ssafy.talkeasy.core.domain.entity.response.AACWordList
 import com.ssafy.talkeasy.core.domain.entity.response.Follow
 import com.ssafy.talkeasy.core.domain.usecase.aac.GenerateSentenceUseCase
 import com.ssafy.talkeasy.core.domain.usecase.aac.GetRelativeVerbListUseCase
-import com.ssafy.talkeasy.core.domain.usecase.aac.GetTTSMp3UrlUseCase
 import com.ssafy.talkeasy.core.domain.usecase.aac.GetWordListUseCase
 import com.ssafy.talkeasy.feature.common.SharedPreferences
 import com.ssafy.talkeasy.feature.common.util.ChatMode
 import dagger.hilt.android.lifecycle.HiltViewModel
+import java.util.Locale
 import javax.inject.Inject
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -26,7 +28,6 @@ class AACViewModel @Inject constructor(
     private val generateSentenceUseCase: GenerateSentenceUseCase,
     private val getWordListUseCase: GetWordListUseCase,
     private val getRelativeVerbListUseCase: GetRelativeVerbListUseCase,
-    private val getTTSMp3UrlUseCase: GetTTSMp3UrlUseCase,
 ) : ViewModel() {
 
     private val _selectedCard: MutableStateFlow<List<String>> =
@@ -54,8 +55,7 @@ class AACViewModel @Inject constructor(
     private val _relativeVerbList: MutableStateFlow<List<AACWord>> = MutableStateFlow(listOf())
     val relativeVerbList: StateFlow<List<AACWord>> = _relativeVerbList
 
-    private val _ttsMp3Url: MutableStateFlow<String> = MutableStateFlow("")
-    val ttsMp3Url: StateFlow<String> = _ttsMp3Url
+    private var textToSpeech: TextToSpeech? = null
 
     val whoRequest: String = "위치 정보 요청한 사람"
 
@@ -119,11 +119,6 @@ class AACViewModel @Inject constructor(
         _relativeVerbList.value = listOf()
     }
 
-    fun initTTSMp3Url() {
-        Log.i("Init", "tts mp3 url init")
-        _ttsMp3Url.value = ""
-    }
-
     fun generateSentence(words: List<String>) = viewModelScope.launch {
         val text = words.toString().split("[", "]")[1]
 
@@ -168,15 +163,21 @@ class AACViewModel @Inject constructor(
         }
     }
 
-    fun getTTSMp3Url(text: String) = viewModelScope.launch {
-        Log.d("getTTSMp3Url", "api called: $text")
-        when (val value = getTTSMp3UrlUseCase(text)) {
-            is Resource.Success<String> -> {
-                _ttsMp3Url.value = value.data
-            }
-
-            is Resource.Error -> {
-                Log.e("getTTSMp3Url", "getTTSMp3Url: ${value.errorMessage}")
+    fun playTTS(context: Context, text: String) = viewModelScope.launch {
+        textToSpeech = TextToSpeech(context) {
+            if (it == TextToSpeech.SUCCESS) {
+                textToSpeech.let { txtToSpeech ->
+                    txtToSpeech?.language = Locale.KOREAN
+                    txtToSpeech?.setSpeechRate(1.0f)
+                    txtToSpeech?.speak(
+                        text,
+                        TextToSpeech.QUEUE_ADD,
+                        null,
+                        null
+                    )
+                }
+            }else{
+                Log.e("playTTS", "Initialization Failed!")
             }
         }
     }
