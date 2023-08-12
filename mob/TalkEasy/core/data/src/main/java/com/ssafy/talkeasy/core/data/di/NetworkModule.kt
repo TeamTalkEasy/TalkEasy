@@ -24,6 +24,8 @@ import retrofit2.converter.gson.GsonConverterFactory
 @InstallIn(SingletonComponent::class)
 object NetworkModule {
 
+    private const val TIME = 10L
+
     @Provides
     @Singleton
     @NoAuthInterceptorClient
@@ -31,9 +33,9 @@ object NetworkModule {
         val loggingInterceptor = HttpLoggingInterceptor()
         loggingInterceptor.level = HttpLoggingInterceptor.Level.BODY
         return OkHttpClient.Builder()
-            .readTimeout(10, TimeUnit.SECONDS)
-            .connectTimeout(10, TimeUnit.SECONDS)
-            .writeTimeout(10, TimeUnit.SECONDS)
+            .readTimeout(TIME, TimeUnit.SECONDS)
+            .connectTimeout(TIME, TimeUnit.SECONDS)
+            .writeTimeout(TIME, TimeUnit.SECONDS)
             .addInterceptor(loggingInterceptor)
             .build()
     }
@@ -50,9 +52,9 @@ object NetworkModule {
         loggingInterceptor.level = HttpLoggingInterceptor.Level.BODY
         val authInterceptor = AuthInterceptor(sharedPreferences)
         return OkHttpClient.Builder()
-            .readTimeout(10, TimeUnit.SECONDS)
-            .connectTimeout(10, TimeUnit.SECONDS)
-            .writeTimeout(10, TimeUnit.SECONDS)
+            .readTimeout(TIME, TimeUnit.SECONDS)
+            .connectTimeout(TIME, TimeUnit.SECONDS)
+            .writeTimeout(TIME, TimeUnit.SECONDS)
             .addInterceptor(loggingInterceptor)
             .addInterceptor(authInterceptor)
             .build()
