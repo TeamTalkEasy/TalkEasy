@@ -87,9 +87,6 @@ dependencies {
     implementation(platform(libs.firebase.bom))
     implementation(libs.firebase.analytics)
 
-    implementation(libs.app.update)
-    implementation(libs.app.update.ktx)
-
     implementation(project(":core:data"))
     implementation(project(":core:domain"))
     implementation(project(":core:fcm"))

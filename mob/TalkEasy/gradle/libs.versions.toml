@@ -21,7 +21,7 @@ junit = "4.13.2"
 
 retrofit = "2.9.0"
 okhttp3 = "5.0.0-alpha.11"
-hilt = "2.47"
+hilt = "2.46.1"
 
 kakao = "2.13.0"
 
@@ -33,19 +33,17 @@ google-map = "18.1.0"
 google-map-location = "21.0.1"
 google-map-compose = "2.11.0"
 
-firebase-bom = "32.2.2"
+firebase-bom = "32.0.0"
 
 ktlint = "11.3.2"
-kotlinx-coroutines = "1.7.3"
+kotlinx-coroutines = "1.7.1"
 
-lottie-compose = "6.1.0"
+lottie-compose = "6.0.0"
 
 zxing-core = "3.4.1"
 zxing-android-embedded = "4.2.0"
 
-rabbitmq = "5.18.0"
-
-in-app-update = "2.1.0"
+rabbitmq = "5.17.0"
 
 [libraries]
 androidx-core = { module = "androidx.core:core-ktx", version.ref = "androidx-core" }
@@ -116,9 +114,6 @@ zxing-core = { module = "com.google.zxing:core", version.ref = "zxing-core" }
 zxing-android-embedded = { module = "com.journeyapps:zxing-android-embedded", version.ref = "zxing-android-embedded" }
 
 rabbitmq = { module = "com.rabbitmq:amqp-client", version.ref = "rabbitmq" }
-
-app-update = { module = "com.google.android.play:app-update", version.ref = "in-app-update" }
-app-update-ktx = { module = "com.google.android.play:app-update-ktx", version.ref = "in-app-update" }
 
 [bundles]
 androidx = ["androidx-core", "androidx-navigation-fragment", "androidx-navigation-ui", "androidx-navigation-fragment-ktx", "androidx-navigation-ui-ktx",
